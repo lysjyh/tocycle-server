@@ -16,4 +16,19 @@ export class Site {
 
   @Column({ nullable: true })
   ypos: string;
+
+  @Column({ nullable: true })
+  siteType: string;
+
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ nullable: true })
+  status: string;
+
+  @Column({ nullable: true })
+  source: string;
+
+  @Column({ nullable: true })
+  updatedAt: string;
 }
