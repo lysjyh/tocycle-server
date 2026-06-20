@@ -23,7 +23,8 @@ h1{margin:0;font-size:28px}
 .card{padding:16px}.card span{color:#6b7280}.card b{display:block;font-size:26px;margin-top:6px}
 .panel{padding:18px;margin-bottom:16px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-input,select{padding:11px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px}
+input,select,textarea{padding:11px 12px;border:1px solid #d1d5db;border-radius:10px;font-size:14px}
+textarea{font-family:Arial,sans-serif}
 button{padding:11px 15px;border:0;border-radius:10px;background:#2563eb;color:white;font-weight:bold;cursor:pointer}
 .green{background:#059669}.orange{background:#d97706}.gray{background:#374151}.red{background:#dc2626}
 .status{margin-left:auto;background:#f3f4f6;padding:9px 12px;border-radius:999px;font-size:13px}
@@ -41,6 +42,7 @@ tr:hover{background:#f8fafc}
 .b-need{background:#ede9fe;color:#6d28d9}
 .small{color:#6b7280;font-size:12px;margin-top:4px}
 .title{font-weight:800}
+@media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -79,6 +81,27 @@ tr:hover{background:#f8fafc}
 </div>
 
 <div id="mapBox"><div id="map"></div></div>
+
+<div class="panel">
+<h2 style="margin-top:0">거래글 등록</h2>
+<div class="row">
+<select id="postCategory">
+<option value="발생토">발생토</option>
+<option value="사토장">사토장</option>
+<option value="토취장">토취장</option>
+<option value="성토재필요">성토재필요</option>
+</select>
+<input id="postTitle" placeholder="제목 예: A급 토사 반출" style="width:300px" />
+<input id="postRegion" placeholder="지역 예: 양주 / 연천" />
+<input id="postSoilType" placeholder="토질 예: 양질토" />
+<input id="postQuantity" placeholder="물량 예: 500루베 / 25톤 20대" />
+<input id="postContact" placeholder="연락처 또는 비공개" />
+</div>
+<br/>
+<textarea id="postMemo" placeholder="메모: 출처, 반입/반출 조건, 특이사항" style="width:100%;height:72px"></textarea>
+<br/><br/>
+<button onclick="createSoilPost()" class="green">거래글 등록</button>
+</div>
 
 <table>
 <thead>
@@ -128,7 +151,6 @@ function updateStats(){
 function getFilteredRows(){
  const k=keyword.value.trim().toLowerCase();
  const f=filterType.value;
-
  return allRows.filter(r=>{
   const text=[r.type,r.name,r.addr,r.ownerName,r.managerName,r.soilType,r.quantity,r.memo].join(' ').toLowerCase();
   return (!k || text.includes(k)) && (f==='전체' || r.type===f);
@@ -223,6 +245,49 @@ async function loadSoilPosts(){
  renderTable();
 }
 
+async function createSoilPost(){
+ const title=postTitle.value.trim();
+ const region=postRegion.value.trim();
+
+ if(!title || !region){
+  alert('제목과 지역은 필수입니다.');
+  return;
+ }
+
+ status.innerText='거래글 등록 중...';
+
+ const res=await fetch('/soil-posts',{
+  method:'POST',
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({
+   category:postCategory.value,
+   title:title,
+   region:region,
+   soilType:postSoilType.value.trim(),
+   quantity:postQuantity.value.trim(),
+   contact:postContact.value.trim(),
+   memo:postMemo.value.trim()
+  })
+ });
+
+ if(!res.ok){
+  alert('거래글 등록 실패. soil-posts API 연결을 확인하세요.');
+  status.innerText='거래글 등록 실패';
+  return;
+ }
+
+ alert('거래글 등록 완료');
+
+ postTitle.value='';
+ postRegion.value='';
+ postSoilType.value='';
+ postQuantity.value='';
+ postContact.value='';
+ postMemo.value='';
+
+ await loadSoilPosts();
+}
+
 function toggleMap(){
  const box=document.getElementById('mapBox');
  const btn=document.getElementById('mapToggleBtn');
@@ -290,14 +355,12 @@ function drawMarkers(rows){
 
   if(lat===null || lng===null)return;
 
-  // 혹시 좌표가 거꾸로 저장된 경우 자동 교정
   if(lat > 100 && lng < 50){
    const temp=lat;
    lat=lng;
    lng=temp;
   }
 
-  // 한국 좌표 범위만 표시
   if(lat < 32 || lat > 39 || lng < 124 || lng > 132)return;
 
   const pos=new kakao.maps.LatLng(lat,lng);
