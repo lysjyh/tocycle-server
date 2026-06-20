@@ -46,13 +46,21 @@ export class TocycleService {
     await this.siteRepository.clear();
 
     const saved = await this.siteRepository.save(
-      list.map((item) => ({
-        orgName: item.orgComName || item.menName || '',
-        addr: item.addr || '',
-        xpos: item.xpos || '',
-        ypos: item.ypos || '',
-      })),
-    );
+  list.map((item) => ({
+  orgName: item.orgComName || item.menName || '',
+  addr: item.addr || '',
+  xpos: item.xpos || '',
+  ypos: item.ypos || '',
+  siteType: item.comClass || '',
+  phone: item.telNo || item.telno || item.phone || '',
+  status: '공공데이터',
+  source: 'TOCYCLE',
+  updatedAt: '',
+  ownerName: item.master || '',
+  orgCode: item.orgComNum || '',
+  managerName: item.memName || '',
+}))
+);
 
     return {
       success: true,

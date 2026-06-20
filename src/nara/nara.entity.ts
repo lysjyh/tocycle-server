@@ -3,26 +3,32 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class NaraProject {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ nullable: true })
-  bidNtceNo: string;
+  bidNtceNo!: string;
 
   @Column({ nullable: true })
-  bidNtceNm: string;
+  bidNtceNm!: string;
 
   @Column({ nullable: true })
-  ntceInsttNm: string;
+  ntceInsttNm!: string;
 
   @Column({ nullable: true })
-  region: string;
+  region!: string;
 
   @Column({ nullable: true })
-  amount: string;
+  contractor!: string;
 
   @Column({ nullable: true })
-  bidDate: string;
+  partnerCompany!: string;
 
   @Column({ nullable: true })
-  source: string;
+  amount!: string;
+
+  @Column({ nullable: true })
+  bidDate!: string;
+
+  @Column({ nullable: true })
+  source!: string;
 }

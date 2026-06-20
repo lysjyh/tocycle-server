@@ -3,32 +3,41 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 @Entity()
 export class Site {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
   @Column({ nullable: true })
-  orgName: string;
+  orgName!: string;
 
   @Column({ nullable: true })
-  addr: string;
+  addr!: string;
 
   @Column({ nullable: true })
-  xpos: string;
+  xpos!: string;
 
   @Column({ nullable: true })
-  ypos: string;
+  ypos!: string;
 
   @Column({ nullable: true })
-  siteType: string;
+  siteType!: string;
 
   @Column({ nullable: true })
-  phone: string;
+  phone!: string;
 
   @Column({ nullable: true })
-  status: string;
+  status!: string;
 
   @Column({ nullable: true })
-  source: string;
+  source!: string;
 
   @Column({ nullable: true })
-  updatedAt: string;
+  updatedAt!: string;
+
+  @Column({ nullable: true })
+  ownerName!: string;
+
+  @Column({ nullable: true })
+  orgCode!: string;
+
+  @Column({ nullable: true })
+  managerName!: string;
 }
