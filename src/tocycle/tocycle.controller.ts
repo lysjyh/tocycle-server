@@ -64,7 +64,7 @@ tr:hover{background:#f8fafc}
 <div class="panel">
 <div class="row">
 <input id="keyword" placeholder="지역 · 회사명 · 구분 · 대표자 · 담당자 · 토질 검색" style="width:390px" oninput="renderTable()" />
-<select id="filterType" onchange="renderTable()">
+<select id="filterType" onchange="handleFilterChange()">
 <option value="전체">전체</option>
 <option value="사토장">사토장</option>
 <option value="토취장">토취장</option>
@@ -148,9 +148,30 @@ function updateStats(){
  statNeed.innerText=allRows.filter(x=>x.type==='성토재필요').length;
 }
 
+function handleFilterChange(){
+ const f=filterType.value;
+
+ if(f==='사토장' || f==='토취장' || f==='골재업체'){
+  if(currentMode !== '토석정보'){
+   loadSites(f);
+   return;
+  }
+ }
+
+ if(f==='발생토' || f==='성토재필요'){
+  if(currentMode !== '거래글'){
+   loadSoilPosts(f);
+   return;
+  }
+ }
+
+ renderTable();
+}
+
 function getFilteredRows(){
  const k=keyword.value.trim().toLowerCase();
  const f=filterType.value;
+
  return allRows.filter(r=>{
   const text=[r.type,r.name,r.addr,r.ownerName,r.managerName,r.soilType,r.quantity,r.memo].join(' ').toLowerCase();
   return (!k || text.includes(k)) && (f==='전체' || r.type===f);
@@ -180,7 +201,7 @@ function renderTable(){
  }
 }
 
-async function loadSites(){
+async function loadSites(selectedType){
  currentMode='토석정보';
  status.innerText='토석정보 불러오는 중...';
 
@@ -207,6 +228,13 @@ async function loadSites(){
  });
 
  updateStats();
+
+ if(selectedType){
+  filterType.value=selectedType;
+ }else{
+  filterType.value='전체';
+ }
+
  renderTable();
 
  if(mapBox.style.display==='block'){
@@ -220,7 +248,7 @@ async function syncSites(){
  await loadSites();
 }
 
-async function loadSoilPosts(){
+async function loadSoilPosts(selectedType){
  currentMode='거래글';
  status.innerText='거래글 불러오는 중...';
 
@@ -242,6 +270,13 @@ async function loadSoilPosts(){
  }));
 
  updateStats();
+
+ if(selectedType){
+  filterType.value=selectedType;
+ }else{
+  filterType.value='전체';
+ }
+
  renderTable();
 }
 
@@ -278,6 +313,8 @@ async function createSoilPost(){
 
  alert('거래글 등록 완료');
 
+ const savedCategory=postCategory.value;
+
  postTitle.value='';
  postRegion.value='';
  postSoilType.value='';
@@ -285,7 +322,7 @@ async function createSoilPost(){
  postContact.value='';
  postMemo.value='';
 
- await loadSoilPosts();
+ await loadSoilPosts(savedCategory);
 }
 
 function toggleMap(){
