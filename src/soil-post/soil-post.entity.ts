@@ -21,7 +21,7 @@ export class SoilPost {
   displayRegion: string;
 
   @Column({ nullable: true })
-  visibility: string; // region = 읍면동만 공개, exact = 정확한 위치 공개
+  visibility: string;
 
   @Column({ nullable: true })
   latitude: string;
@@ -45,10 +45,16 @@ export class SoilPost {
   imageData: string;
 
   @Column({ nullable: true })
-  source: string; // user
+  source: string;
 
   @Column({ nullable: true })
-  permitStatus: string; // 미확인 / 서류있음 / 허가관련있음
+  permitStatus: string;
+
+  @Column({ nullable: true })
+  dealStatus: string; // 모집중 / 완료 / 마감 / 보류
+
+  @Column({ default: false })
+  isHidden: boolean;
 
   @Column()
   createdAt: string;
