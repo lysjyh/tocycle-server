@@ -15,10 +15,18 @@ export class SoilPostService {
       category: data.category || '발생토',
       title: data.title || '',
       region: data.region || '',
+      address: data.address || '',
+      displayRegion: data.displayRegion || data.region || '',
+      visibility: data.visibility || 'region',
+      latitude: data.latitude || '',
+      longitude: data.longitude || '',
       soilType: data.soilType || '',
       quantity: data.quantity || '',
       contact: data.contact || '',
       memo: data.memo || '',
+      imageData: data.imageData || '',
+      source: 'user',
+      permitStatus: data.permitStatus || '미확인',
       createdAt: new Date().toISOString(),
     });
   }
